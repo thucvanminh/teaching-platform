@@ -29,14 +29,19 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
+        var supabaseUrl = _config["Supabase:Url"]!;
+        var serviceRoleKey = _config["Supabase:ServiceRoleKey"]!;
+
+        var normalizedUsername = request.Username.Trim().ToLowerInvariant();
+        if (string.IsNullOrWhiteSpace(normalizedUsername) || normalizedUsername.Length < 3)
+            return BadRequest(new { message = "Username must be at least 3 characters" });
+
+        if (await _db.UserProfiles.AnyAsync(u => u.Username == normalizedUsername))
+            return BadRequest(new { message = "Username already taken" });
+
         if (await _db.UserProfiles.AnyAsync(u => u.Id.ToString() == request.Email))
             return BadRequest(new { message = "User already exists" });
 
-        var supabaseUrl = _config["Supabase:Url"]!;
-        var supabaseKey = _config["Supabase:AnonKey"]!;
-        var serviceRoleKey = _config["Supabase:ServiceRoleKey"]!;
-
-        // Create user via Supabase Admin API (bypasses email confirmation)
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{supabaseUrl}/auth/v1/admin/users")
         {
             Content = new StringContent(
@@ -62,19 +67,26 @@ public class AuthController : ControllerBase
         if (result?.Id == null)
             return BadRequest(new { message = "Failed to get user ID from Supabase" });
 
-        // Create profile in our database
         var profile = new UserProfile
         {
             Id = Guid.Parse(result.Id),
+            Username = normalizedUsername,
             FullName = request.FullName,
             Role = request.Role,
             CreatedAt = DateTime.UtcNow
         };
 
         _db.UserProfiles.Add(profile);
-        await _db.SaveChangesAsync();
+        try
+        {
+            await _db.SaveChangesAsync();
+        }
+        catch (DbUpdateException)
+        {
+            return BadRequest(new { message = "Username or email already exists" });
+        }
 
-        return Ok(new { message = "Registration successful", userId = result.Id });
+        return Ok(new { message = "Registration successful", userId = result.Id, username = normalizedUsername });
     }
 
     [HttpPost("login")]
@@ -83,11 +95,26 @@ public class AuthController : ControllerBase
         var supabaseUrl = _config["Supabase:Url"]!;
         var supabaseKey = _config["Supabase:AnonKey"]!;
 
-        // Authenticate with Supabase
+        var email = request.Identifier.Trim();
+
+        if (!email.Contains('@'))
+        {
+            var username = email.ToLowerInvariant();
+            var profile = await _db.UserProfiles.FirstOrDefaultAsync(u => u.Username == username);
+            if (profile == null)
+                return Unauthorized(new { message = "Invalid username or password" });
+
+            var supabaseUser = await GetSupabaseUserById(profile.Id);
+            if (supabaseUser?.Email == null)
+                return Unauthorized(new { message = "Invalid username or password" });
+
+            email = supabaseUser.Email;
+        }
+
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{supabaseUrl}/auth/v1/token?grant_type=password")
         {
             Content = new StringContent(
-                System.Text.Json.JsonSerializer.Serialize(new { email = request.Email, password = request.Password }),
+                System.Text.Json.JsonSerializer.Serialize(new { email, password = request.Password }),
                 Encoding.UTF8,
                 "application/json")
         };
@@ -95,7 +122,7 @@ public class AuthController : ControllerBase
         var response = await _httpClient.SendAsync(requestMessage);
 
         if (!response.IsSuccessStatusCode)
-            return Unauthorized(new { message = "Invalid email or password" });
+            return Unauthorized(new { message = "Invalid credentials" });
 
         var result = System.Text.Json.JsonSerializer.Deserialize<SupabaseTokenResponse>(
             await response.Content.ReadAsStringAsync(),
@@ -104,29 +131,29 @@ public class AuthController : ControllerBase
         if (result?.access_token == null || result.user?.Id == null)
             return Unauthorized(new { message = "Authentication failed" });
 
-        // Get profile from our database
-        var profile = await _db.UserProfiles.FindAsync(Guid.Parse(result.user.Id));
-        if (profile == null)
+        var userProfile = await _db.UserProfiles.FindAsync(Guid.Parse(result.user.Id));
+        if (userProfile == null)
         {
-            // Auto-create profile if missing
-            profile = new UserProfile
+            userProfile = new UserProfile
             {
                 Id = Guid.Parse(result.user.Id),
-                FullName = request.Email,
+                Username = "",
+                FullName = result.user.Email ?? "",
                 Role = "student",
                 CreatedAt = DateTime.UtcNow
             };
-            _db.UserProfiles.Add(profile);
+            _db.UserProfiles.Add(userProfile);
             await _db.SaveChangesAsync();
         }
 
         return Ok(new AuthResponse(
             result.access_token,
-            new UserProfileDto(Guid.Parse(result.user.Id), request.Email, profile.FullName, profile.Role)
+            new UserProfileDto(userProfile.Id, result.user.Email ?? "", userProfile.Username ?? "", userProfile.FullName, userProfile.Role)
         ));
     }
 
     [HttpGet("me")]
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public async Task<IActionResult> Me()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -138,11 +165,27 @@ public class AuthController : ControllerBase
             return NotFound();
 
         var email = User.FindFirstValue(ClaimTypes.Email) ?? "";
-        return Ok(new UserProfileDto(profile.Id, email, profile.FullName, profile.Role));
+        return Ok(new UserProfileDto(profile.Id, email, profile.Username ?? "", profile.FullName, profile.Role));
+    }
+
+    private async Task<SupabaseUser?> GetSupabaseUserById(Guid userId)
+    {
+        var supabaseUrl = _config["Supabase:Url"]!;
+        var serviceRoleKey = _config["Supabase:ServiceRoleKey"]!;
+
+        var req = new HttpRequestMessage(HttpMethod.Get, $"{supabaseUrl}/auth/v1/admin/users/{userId}");
+        req.Headers.Add("apikey", serviceRoleKey);
+        req.Headers.Add("Authorization", $"Bearer {serviceRoleKey}");
+
+        var response = await _httpClient.SendAsync(req);
+        if (!response.IsSuccessStatusCode) return null;
+
+        var json = await response.Content.ReadAsStringAsync();
+        return System.Text.Json.JsonSerializer.Deserialize<SupabaseUser>(json,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
 }
 
-// Supabase API response models
 public class SupabaseAuthResponse
 {
     public SupabaseUser? User { get; set; }

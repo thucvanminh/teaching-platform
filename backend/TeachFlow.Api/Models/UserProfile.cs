@@ -14,6 +14,9 @@ public class UserProfile
     [Column("full_name")]
     public string FullName { get; set; } = string.Empty;
 
+    [Column("username")]
+    public string? Username { get; set; }
+
     [Required]
     [Column("role")]
     public string Role { get; set; } = string.Empty;

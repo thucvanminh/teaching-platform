@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext'
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
   const [role, setRole] = useState('student')
@@ -13,10 +14,10 @@ export default function RegisterPage() {
     e.preventDefault()
     setError('')
     try {
-      await signUp(email, password, fullName, role)
+      await signUp(email.trim(), username.trim().toLowerCase(), password, fullName.trim(), role)
       window.location.href = '/login'
     } catch (err: any) {
-      setError(err.message || 'Registration failed')
+      setError(err.response?.data?.message || err.message || 'Registration failed')
     }
   }
 
@@ -34,6 +35,16 @@ export default function RegisterPage() {
             required
           />
           <input
+            type="text"
+            placeholder="Username (dùng để đăng nhập)"
+            value={username}
+            onChange={(e) => setUsername(e.target.value.toLowerCase())}
+            minLength={3}
+            pattern="[a-z0-9_]+"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            required
+          />
+          <input
             type="email"
             placeholder="Email"
             value={email}
@@ -46,6 +57,7 @@ export default function RegisterPage() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            minLength={6}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             required
           />
