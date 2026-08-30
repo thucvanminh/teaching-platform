@@ -13,9 +13,13 @@ export class SupabaseService {
 
     this.adminClient = createClient(url, serviceKey, {
       auth: { autoRefreshToken: false, persistSession: false },
+      db: { schema: 'public' },
+      global: { headers: { 'x-client-info': 'teaching-api' } },
     });
     this.anonClient = createClient(url, anonKey, {
       auth: { autoRefreshToken: false, persistSession: false },
+      db: { schema: 'public' },
+      global: { headers: { 'x-client-info': 'teaching-api' } },
     });
   }
 

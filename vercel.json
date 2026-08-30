@@ -1,17 +1,6 @@
 {
-  "version": 2,
-  "installCommand": "pnpm install && pnpm --filter frontend build && pnpm --filter api build",
+  "installCommand": "pnpm install && pnpm --filter frontend build",
+  "buildCommand": "cd apps/web && npm run build",
   "outputDirectory": "apps/web/dist",
-  "builds": [
-    {
-      "src": "apps/api/src/main.ts",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "apps/api/src/main.ts"
-    }
-  ]
+  "framework": "vite"
 }

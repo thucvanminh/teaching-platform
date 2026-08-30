@@ -48,9 +48,11 @@ export class AuthService {
   async login(dto: LoginDto) {
     let email = dto.identifier.trim();
 
+    // If not email, lookup by username — then get email in parallel with profile
     if (!email.includes('@')) {
       const username = email.toLowerCase();
-      const { data: profile } = await this.supabase.admin
+
+      const { data: profile, error: profileErr } = await this.supabase.admin
         .from('user_profiles')
         .select('id')
         .eq('username', username)

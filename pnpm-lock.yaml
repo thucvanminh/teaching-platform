@@ -60,6 +60,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.45.4
+        version: 2.112.4
       axios:
         specifier: ^1.20.0
         version: 1.20.0

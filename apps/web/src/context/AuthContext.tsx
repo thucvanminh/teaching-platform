@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import api from '../lib/api'
+import { supabase } from '../lib/supabase'
 import type { User } from '../types'
 
 interface AuthContextType {
@@ -7,7 +7,7 @@ interface AuthContextType {
   loading: boolean
   signIn: (identifier: string, password: string) => Promise<void>
   signUp: (email: string, username: string, password: string, fullName: string, role: string) => Promise<void>
-  signOut: () => void
+  signOut: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -17,34 +17,100 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const stored = localStorage.getItem('user')
-    if (stored) {
-      try { setUser(JSON.parse(stored)) } catch {}
-    }
-    setLoading(false)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        loadProfile(session.user.id, session.user.email || '')
+      } else {
+        setLoading(false)
+      }
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        loadProfile(session.user.id, session.user.email || '')
+      } else {
+        setUser(null)
+        setLoading(false)
+      }
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
-  async function signIn(identifier: string, password: string) {
-    const { data } = await api.post('/api/auth/login', { identifier, password })
-    const userData = {
-      id: data.user.id,
-      email: data.user.email,
-      username: data.user.username,
-      fullName: data.user.fullName,
-      role: data.user.role
+  async function loadProfile(userId: string, email: string) {
+    const { data: profile } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('id', userId)
+      .single()
+
+    if (profile) {
+      setUser({
+        id: userId,
+        email,
+        username: profile.username || '',
+        fullName: profile.full_name || '',
+        role: profile.role || 'student',
+      })
+    } else {
+      setUser({
+        id: userId,
+        email,
+        username: '',
+        fullName: email,
+        role: 'student',
+      })
     }
-    localStorage.setItem('user', JSON.stringify(userData))
-    localStorage.setItem('access_token', data.accessToken)
-    setUser(userData)
+    setLoading(false)
+  }
+
+  async function signIn(identifier: string, password: string) {
+    let email = identifier.trim()
+
+    if (!email.includes('@')) {
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('id')
+        .eq('username', email.toLowerCase())
+        .single()
+
+      if (!profile) throw new Error('Invalid credentials')
+
+      const { data: userData } = await supabase.auth.admin.getUserById(profile.id)
+      if (!userData?.user?.email) throw new Error('Invalid credentials')
+      email = userData.user.email
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw error
+
+    if (data.user) {
+      await loadProfile(data.user.id, data.user.email || '')
+    }
   }
 
   async function signUp(email: string, username: string, password: string, fullName: string, role: string) {
-    await api.post('/api/auth/register', { email, username, password, fullName, role })
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { username, full_name: fullName, role },
+      },
+    })
+    if (error) throw error
+
+    if (data.user) {
+      await supabase.from('user_profiles').insert({
+        id: data.user.id,
+        username: username.toLowerCase(),
+        full_name: fullName,
+        role,
+      })
+    }
   }
 
-  function signOut() {
-    localStorage.removeItem('user')
-    localStorage.removeItem('access_token')
+  async function signOut() {
+    await supabase.auth.signOut()
     setUser(null)
   }
 

@@ -19,9 +19,13 @@ let SupabaseService = class SupabaseService {
         const anonKey = process.env.SUPABASE_ANON_KEY;
         this.adminClient = (0, supabase_js_1.createClient)(url, serviceKey, {
             auth: { autoRefreshToken: false, persistSession: false },
+            db: { schema: 'public' },
+            global: { headers: { 'x-client-info': 'teaching-api' } },
         });
         this.anonClient = (0, supabase_js_1.createClient)(url, anonKey, {
             auth: { autoRefreshToken: false, persistSession: false },
+            db: { schema: 'public' },
+            global: { headers: { 'x-client-info': 'teaching-api' } },
         });
     }
     get admin() {

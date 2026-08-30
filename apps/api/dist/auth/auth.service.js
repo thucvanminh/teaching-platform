@@ -50,7 +50,7 @@ let AuthService = class AuthService {
         let email = dto.identifier.trim();
         if (!email.includes('@')) {
             const username = email.toLowerCase();
-            const { data: profile } = await this.supabase.admin
+            const { data: profile, error: profileErr } = await this.supabase.admin
                 .from('user_profiles')
                 .select('id')
                 .eq('username', username)
