@@ -19,39 +19,64 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-6">TeachFlow</h1>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="card w-full max-w-md">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[var(--color-primary)] text-white text-2xl font-bold mb-4">
+            T
+          </div>
+          <h1 className="text-2xl font-bold text-[var(--color-text)]">TeachFlow</h1>
+          <p className="text-sm text-[var(--color-text-secondary)] mt-1">Sign in to your account</p>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+              Username or Email
+            </label>
             <input
               type="text"
-              placeholder="Username or Email"
+              placeholder="Enter your username or email"
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="input"
               required
             />
-            <p className="text-xs text-gray-400 mt-1">Bạn có thể đăng nhập bằng username hoặc email</p>
           </div>
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            required
-          />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input"
+              required
+            />
+          </div>
+
+          {error && (
+            <div className="p-3 rounded-lg bg-[var(--color-error)] text-white text-sm">
+              {error}
+            </div>
+          )}
+
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            className="btn btn-primary w-full"
           >
             Sign In
           </button>
         </form>
-        <p className="text-center mt-4 text-gray-600">
-          Don't have an account? <a href="/register" className="text-blue-600 hover:underline">Register</a>
+
+        <p className="text-center mt-6 text-[var(--color-text-secondary)]">
+          Don't have an account?{' '}
+          <a href="/register" className="text-[var(--color-primary)] font-medium hover:underline">
+            Register
+          </a>
         </p>
       </div>
     </div>

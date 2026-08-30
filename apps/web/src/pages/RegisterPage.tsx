@@ -22,63 +22,139 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-6">Create Account</h1>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="card w-full max-w-md">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[var(--color-primary)] text-white text-2xl font-bold mb-4">
+            T
+          </div>
+          <h1 className="text-2xl font-bold text-[var(--color-text)]">Create Account</h1>
+          <p className="text-sm text-[var(--color-text-secondary)] mt-1">Join TeachFlow today</p>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Username (dùng để đăng nhập)"
-            value={username}
-            onChange={(e) => setUsername(e.target.value.toLowerCase())}
-            minLength={3}
-            pattern="[a-z0-9_]+"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            required
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            minLength={6}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            required
-          />
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
-            <option value="student">Student</option>
-            <option value="teacher">Teacher</option>
-          </select>
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+              Full Name
+            </label>
+            <input
+              type="text"
+              placeholder="Enter your full name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="input"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+              Username
+            </label>
+            <input
+              type="text"
+              placeholder="Choose a username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value.toLowerCase())}
+              minLength={3}
+              pattern="[a-z0-9_]+"
+              className="input"
+              required
+            />
+            <p className="text-xs text-[var(--color-text-secondary)] mt-1">
+              Lowercase letters, numbers, and underscores only
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="input"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              placeholder="Create a password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              minLength={6}
+              className="input"
+              required
+            />
+            <p className="text-xs text-[var(--color-text-secondary)] mt-1">
+              Minimum 6 characters
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+              I am a...
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setRole('student')}
+                className={`p-4 rounded-xl text-center transition-all ${
+                  role === 'student'
+                    ? 'bg-[var(--color-primary)] text-white shadow-lg'
+                    : 'bg-[var(--color-bg)] text-[var(--color-text)]'
+                }`}
+                style={role === 'student' ? {} : {
+                  boxShadow: '-4px -4px 10px var(--shadow-light), 4px 4px 10px var(--shadow-dark)'
+                }}
+              >
+                <div className="text-2xl mb-1">📚</div>
+                <div className="font-medium">Student</div>
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole('teacher')}
+                className={`p-4 rounded-xl text-center transition-all ${
+                  role === 'teacher'
+                    ? 'bg-[var(--color-primary)] text-white shadow-lg'
+                    : 'bg-[var(--color-bg)] text-[var(--color-text)]'
+                }`}
+                style={role === 'teacher' ? {} : {
+                  boxShadow: '-4px -4px 10px var(--shadow-light), 4px 4px 10px var(--shadow-dark)'
+                }}
+              >
+                <div className="text-2xl mb-1">👩‍🏫</div>
+                <div className="font-medium">Teacher</div>
+              </button>
+            </div>
+          </div>
+
+          {error && (
+            <div className="p-3 rounded-lg bg-[var(--color-error)] text-white text-sm">
+              {error}
+            </div>
+          )}
+
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            className="btn btn-primary w-full"
           >
-            Register
+            Create Account
           </button>
         </form>
-        <p className="text-center mt-4 text-gray-600">
-          Already have an account? <a href="/login" className="text-blue-600 hover:underline">Sign In</a>
+
+        <p className="text-center mt-6 text-[var(--color-text-secondary)]">
+          Already have an account?{' '}
+          <a href="/login" className="text-[var(--color-primary)] font-medium hover:underline">
+            Sign In
+          </a>
         </p>
       </div>
     </div>

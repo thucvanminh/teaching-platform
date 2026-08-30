@@ -1,6 +1,18 @@
 @import "tailwindcss";
+@import "../../../design-system/teaching-american/design-system.css";
 
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+/* Tailwind v4 config - merge with design system */
+@theme {
+  --color-primary: #6C9BCF;
+  --color-on-primary: #FFFFFF;
+  --color-accent: #F4B942;
+  --color-on-accent: #1A1A2E;
+  --color-success: #7BC67E;
+  --color-error: #E57373;
+  --color-bg: #E8EDF2;
+  --color-text: #2D3748;
+  --color-text-secondary: #718096;
+  
+  --shadow-light: #FFFFFF;
+  --shadow-dark: #C5CDD6;
 }

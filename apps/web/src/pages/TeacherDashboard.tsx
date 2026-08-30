@@ -41,22 +41,60 @@ export default function TeacherDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
+    <div className="min-h-screen">
+      {/* Header */}
+      <header className="card !rounded-none border-b border-[var(--color-border)]">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold">Teacher Dashboard</h1>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold">
+              T
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-[var(--color-text)]">Teacher Dashboard</h1>
+              <p className="text-xs text-[var(--color-text-secondary)]">Manage your courses</p>
+            </div>
+          </div>
           <div className="flex items-center gap-4">
-            <span className="text-gray-600">{user?.fullName}</span>
-            <button onClick={signOut} className="text-red-600 hover:text-red-700">Logout</button>
+            <span className="text-sm text-[var(--color-text-secondary)] hidden sm:block">{user?.fullName}</span>
+            <button onClick={signOut} className="btn text-sm px-3 py-2 text-[var(--color-error)]">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              <span className="hidden sm:inline">Logout</span>
+            </button>
           </div>
         </div>
       </header>
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <nav className="flex gap-2 mb-6">
-          <button onClick={() => setView('list')} className="px-4 py-2 rounded-lg bg-blue-100 text-blue-700">Processes</button>
-          <button onClick={() => { setSelectedProcess(null); setView('create') }} className="px-4 py-2 rounded-lg bg-green-100 text-green-700">+ New Process</button>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 py-6">
+        {/* Navigation Tabs */}
+        <nav className="flex gap-3 mb-6 overflow-x-auto pb-2">
+          <button 
+            onClick={() => setView('list')} 
+            className={`btn text-sm whitespace-nowrap ${
+              view === 'list' ? 'btn-primary' : ''
+            }`}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
+            Processes
+          </button>
+          <button 
+            onClick={() => { setSelectedProcess(null); setView('create') }} 
+            className={`btn text-sm whitespace-nowrap ${
+              view === 'create' ? 'btn-primary' : ''
+            }`}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            New Process
+          </button>
         </nav>
 
+        {/* Views */}
         {view === 'list' && (
           <ProcessList
             processes={processes}
@@ -66,15 +104,25 @@ export default function TeacherDashboard() {
             onDelete={loadProcesses}
           />
         )}
-        {view === 'create' && <ProcessForm onSaved={handleSaved} onCancel={() => setView('list')} />}
+        {view === 'create' && (
+          <ProcessForm onSaved={handleSaved} onCancel={() => setView('list')} />
+        )}
         {view === 'edit' && selectedProcess && (
           <ProcessForm process={selectedProcess} onSaved={handleSaved} onCancel={() => setView('list')} />
         )}
         {view === 'lessons' && selectedProcess && (
-          <LessonManager processId={selectedProcess.id} processTitle={selectedProcess.title} onBack={() => setView('list')} />
+          <LessonManager 
+            processId={selectedProcess.id} 
+            processTitle={selectedProcess.title} 
+            onBack={() => setView('list')} 
+          />
         )}
         {view === 'assign' && selectedProcess && (
-          <StudentAssignment processId={selectedProcess.id} processTitle={selectedProcess.title} onBack={() => setView('list')} />
+          <StudentAssignment 
+            processId={selectedProcess.id} 
+            processTitle={selectedProcess.title} 
+            onBack={() => setView('list')} 
+          />
         )}
       </main>
     </div>
