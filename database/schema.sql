@@ -77,22 +77,30 @@ ALTER TABLE student_processes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE lesson_completions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE lesson_notes ENABLE ROW LEVEL SECURITY;
 
--- Allow users to read their own profile
+-- Helper function to check if current user is a teacher without triggering RLS recursion
+CREATE OR REPLACE FUNCTION is_teacher()
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+STABLE
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM user_profiles
+    WHERE id = auth.uid() AND role = 'teacher'
+  );
+$$;
+
+-- Allow users to read their own profile (or teachers to view all profiles)
 CREATE POLICY "Users can view own profile" ON user_profiles
-    FOR SELECT USING (auth.uid() = id);
+    FOR SELECT USING (auth.uid() = id OR is_teacher());
 
 -- Allow users to update their own profile
 CREATE POLICY "Users can update own profile" ON user_profiles
     FOR UPDATE USING (auth.uid() = id);
 
--- Allow teachers to view all profiles (for student management)
-CREATE POLICY "Teachers can view all profiles" ON user_profiles
-    FOR SELECT USING (
-        EXISTS (SELECT 1 FROM user_profiles WHERE id = auth.uid() AND role = 'teacher')
-    );
-
--- Allow teachers to insert profiles (for registration)
-CREATE POLICY "Teachers can insert profiles" ON user_profiles
+-- Allow inserting profiles (for registration)
+CREATE POLICY "Users can insert profiles" ON user_profiles
     FOR INSERT WITH CHECK (true);
 
 -- Allow teachers to manage their own processes
