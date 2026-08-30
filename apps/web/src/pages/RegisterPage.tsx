@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 export default function RegisterPage() {
@@ -9,13 +10,14 @@ export default function RegisterPage() {
   const [role, setRole] = useState('student')
   const [error, setError] = useState('')
   const { signUp } = useAuth()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     try {
       await signUp(email.trim(), username.trim().toLowerCase(), password, fullName.trim(), role)
-      window.location.href = '/login'
+      navigate('/login')
     } catch (err: any) {
       setError(err.response?.data?.message || err.message || 'Registration failed')
     }
@@ -129,9 +131,9 @@ export default function RegisterPage() {
 
         <p className="text-center mt-6 text-[var(--color-text-secondary)]">
           Already have an account?{' '}
-          <a href="/login" className="text-[var(--color-accent)] font-medium hover:underline">
+          <Link to="/login" className="text-[var(--color-accent)] font-medium hover:underline">
             Sign In
-          </a>
+          </Link>
         </p>
       </div>
     </div>

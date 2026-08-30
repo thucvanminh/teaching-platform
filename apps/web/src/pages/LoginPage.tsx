@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 export default function LoginPage() {
@@ -6,13 +7,14 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const { signIn } = useAuth()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     try {
       await signIn(identifier.trim(), password)
-      window.location.href = '/'
+      navigate('/')
     } catch (err: any) {
       setError(err.response?.data?.message || err.message || 'Login failed')
     }
@@ -71,9 +73,9 @@ export default function LoginPage() {
 
         <p className="text-center mt-6 text-[var(--color-text-secondary)]">
           Don't have an account?{' '}
-          <a href="/register" className="text-[var(--color-accent)] font-medium hover:underline">
+          <Link to="/register" className="text-[var(--color-accent)] font-medium hover:underline">
             Register
-          </a>
+          </Link>
         </p>
       </div>
     </div>

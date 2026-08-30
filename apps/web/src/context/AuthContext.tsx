@@ -12,57 +12,84 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+function createUserFromSession(sessionUser: any): User {
+  const meta = sessionUser.user_metadata || {}
+  return {
+    id: sessionUser.id,
+    email: sessionUser.email || '',
+    username: meta.username || '',
+    fullName: meta.full_name || meta.fullName || sessionUser.email || '',
+    role: meta.role || 'student',
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        loadProfile(session.user.id, session.user.email || '')
-      } else {
-        setLoading(false)
+  async function loadProfile(sessionUser: any) {
+    try {
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('id', sessionUser.id)
+        .maybeSingle()
+
+      if (profile) {
+        setUser({
+          id: sessionUser.id,
+          email: sessionUser.email || '',
+          username: profile.username || sessionUser.user_metadata?.username || '',
+          fullName: profile.full_name || sessionUser.user_metadata?.full_name || sessionUser.email || '',
+          role: profile.role || sessionUser.user_metadata?.role || 'student',
+        })
       }
-    })
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        loadProfile(session.user.id, session.user.email || '')
-      } else {
-        setUser(null)
-        setLoading(false)
-      }
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
-
-  async function loadProfile(userId: string, email: string) {
-    const { data: profile } = await supabase
-      .from('user_profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
-
-    if (profile) {
-      setUser({
-        id: userId,
-        email,
-        username: profile.username || '',
-        fullName: profile.full_name || '',
-        role: profile.role || 'student',
-      })
-    } else {
-      setUser({
-        id: userId,
-        email,
-        username: '',
-        fullName: email,
-        role: 'student',
-      })
+    } catch (err) {
+      console.error('Error loading profile:', err)
     }
-    setLoading(false)
   }
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function initAuth() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session?.user && isMounted) {
+          const initialUser = createUserFromSession(session.user)
+          setUser(initialUser)
+          await loadProfile(session.user)
+        }
+      } catch (err) {
+        console.error('Error initializing auth session:', err)
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
+      }
+    }
+
+    initAuth()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        const initialUser = createUserFromSession(session.user)
+        setUser(initialUser)
+        await loadProfile(session.user)
+        if (isMounted) setLoading(false)
+      } else if (event === 'SIGNED_OUT') {
+        if (isMounted) {
+          setUser(null)
+          setLoading(false)
+        }
+      }
+    })
+
+    return () => {
+      isMounted = false
+      subscription.unsubscribe()
+    }
+  }, [])
 
   async function signIn(identifier: string, password: string) {
     let email = identifier.trim()
@@ -75,7 +102,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error
 
     if (data.user) {
-      await loadProfile(data.user.id, data.user.email || '')
+      const initialUser = createUserFromSession(data.user)
+      setUser(initialUser)
+      await loadProfile(data.user)
     }
   }
 
