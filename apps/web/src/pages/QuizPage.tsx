@@ -256,10 +256,10 @@ export default function QuizPage() {
                 onClick={() => setCurrentIdx(idx)}
                 className={`w-10 h-10 rounded-full text-sm font-medium transition-all ${
                   idx === currentIdx
-                    ? 'bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white shadow-lg'
+                    ? 'bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white shadow-[0_0_16px_var(--color-primary-glow)] border border-white/50 scale-105'
                     : hasAnswer
-                      ? 'bg-[var(--color-success)] text-white'
-                      : 'bg-[rgba(255,255,255,0.1)] text-white hover:bg-[rgba(255,255,255,0.2)]'
+                      ? 'bg-[var(--color-success)] text-white shadow-[0_0_12px_var(--color-success-glow)]'
+                      : 'bg-[rgba(255,255,255,0.08)] border border-white/10 text-white hover:bg-[rgba(255,255,255,0.18)]'
                 }`}
               >
                 {idx + 1}

@@ -25,7 +25,7 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="glass-card w-full max-w-md animate-fade-in">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white text-2xl font-bold mb-4 shadow-lg">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white text-2xl font-bold mb-4 shadow-[0_0_24px_var(--color-primary-glow)] border border-white/40">
             T
           </div>
           <h1 className="text-3xl font-bold text-white font-heading">Create Account</h1>
@@ -94,8 +94,8 @@ export default function RegisterPage() {
                 onClick={() => setRole('student')}
                 className={`p-4 rounded-xl text-center transition-all ${
                   role === 'student'
-                    ? 'bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white shadow-lg'
-                    : 'glass-card text-white'
+                    ? 'bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white shadow-[0_0_20px_var(--color-primary-glow)] border border-white/50'
+                    : 'glass-card text-white hover:border-white/30'
                 }`}
               >
                 <div className="text-2xl mb-1">📚</div>
@@ -106,8 +106,8 @@ export default function RegisterPage() {
                 onClick={() => setRole('teacher')}
                 className={`p-4 rounded-xl text-center transition-all ${
                   role === 'teacher'
-                    ? 'bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white shadow-lg'
-                    : 'glass-card text-white'
+                    ? 'bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white shadow-[0_0_20px_var(--color-primary-glow)] border border-white/50'
+                    : 'glass-card text-white hover:border-white/30'
                 }`}
               >
                 <div className="text-2xl mb-1">👩‍🏫</div>
@@ -117,7 +117,7 @@ export default function RegisterPage() {
           </div>
 
           {error && (
-            <div className="p-3 rounded-lg bg-[rgba(248,113,113,0.2)] border border-[var(--color-error)] text-white text-sm">
+            <div className="p-3 rounded-xl bg-[rgba(248,113,113,0.15)] border border-[var(--color-error)] text-white text-sm backdrop-blur-sm">
               {error}
             </div>
           )}

@@ -24,7 +24,7 @@ export default function StudentDashboard() {
       <header className="glass-header py-4 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#f093fb] to-[#764ba2] text-white flex items-center justify-center font-bold shadow-lg">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-secondary)] text-white flex items-center justify-center font-bold shadow-[0_0_16px_var(--color-accent-glow)] border border-white/40">
               S
             </div>
             <div>

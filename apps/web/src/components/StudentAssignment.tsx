@@ -116,7 +116,7 @@ export default function StudentAssignment({ processId, processTitle, onBack }: P
             <div key={a.id} className="quiz-card animate-fade-in" style={{ animationDelay: `${idx * 0.1}s` }}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white flex items-center justify-center font-bold shadow-lg">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white flex items-center justify-center font-bold shadow-[0_0_16px_var(--color-primary-glow)] border border-white/40">
                     {(a.studentName || a.studentId).charAt(0).toUpperCase()}
                   </div>
                   <div>

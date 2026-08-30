@@ -41,6 +41,11 @@ function AppRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
+      <div className="liquid-ambient-backdrop" aria-hidden="true">
+        <div className="liquid-orb liquid-orb-1" />
+        <div className="liquid-orb liquid-orb-2" />
+        <div className="liquid-orb liquid-orb-3" />
+      </div>
       <AuthProvider>
         <AppRoutes />
       </AuthProvider>
