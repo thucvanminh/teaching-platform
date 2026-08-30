@@ -68,17 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let email = identifier.trim()
 
     if (!email.includes('@')) {
-      const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('id')
-        .eq('username', email.toLowerCase())
-        .single()
-
-      if (!profile) throw new Error('Invalid credentials')
-
-      const { data: userData } = await supabase.auth.admin.getUserById(profile.id)
-      if (!userData?.user?.email) throw new Error('Invalid credentials')
-      email = userData.user.email
+      email = `${email.toLowerCase()}@teachflow.test`
     }
 
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
