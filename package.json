@@ -1,6 +1,16 @@
 {
-  "dependencies": {
-    "@supabase/ssr": "^0.12.5",
-    "@supabase/supabase-js": "^2.112.4"
-  }
+  "name": "thucteaching",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,green \"pnpm --filter api dev\" \"pnpm --filter web dev\"",
+    "build": "pnpm --filter api build && pnpm --filter web build",
+    "start:api": "pnpm --filter api start:dev",
+    "start:web": "pnpm --filter web dev",
+    "deploy": "vercel --prod"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "packageManager": "pnpm@9.12.0"
 }
