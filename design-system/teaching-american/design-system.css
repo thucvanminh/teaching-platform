@@ -4,8 +4,7 @@
    Last updated: 2026-08-30
    ============================================ */
 
-/* Google Fonts Import */
-@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap');
+/* Google Fonts loaded via index.html <link> tag */
 
 /* ============================================
    CSS VARIABLES
