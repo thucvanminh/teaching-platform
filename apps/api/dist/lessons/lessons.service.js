@@ -28,40 +28,133 @@ let LessonsService = class LessonsService {
             throw new common_1.ForbiddenException('Not your process');
         }
     }
-    async create(processId, dto, teacherId) {
-        await this.assertProcessOwner(processId, teacherId);
+    async assertThemeOwner(themeId, teacherId) {
+        const { data: theme } = await this.supabase.admin
+            .from('themes')
+            .select('*, processes!inner(teacher_id, id)')
+            .eq('id', themeId)
+            .single();
+        if (!theme)
+            throw new common_1.NotFoundException('Theme not found');
+        if (theme.processes?.teacher_id !== teacherId) {
+            throw new common_1.ForbiddenException('Not your theme');
+        }
+        return theme;
+    }
+    async findAllForTheme(themeId, userId, role) {
+        const { data: theme } = await this.supabase.admin
+            .from('themes')
+            .select('*, processes!inner(teacher_id, id)')
+            .eq('id', themeId)
+            .single();
+        if (!theme)
+            throw new common_1.NotFoundException('Theme not found');
+        if (role === 'teacher') {
+            if (theme.processes?.teacher_id !== userId) {
+                throw new common_1.ForbiddenException('Not your theme');
+            }
+        }
+        else {
+            const processId = theme.process_id;
+            const { data: assigned } = await this.supabase.admin
+                .from('student_processes')
+                .select('id')
+                .eq('student_id', userId)
+                .eq('process_id', processId)
+                .single();
+            if (!assigned)
+                throw new common_1.ForbiddenException('Theme not assigned to you');
+        }
         const { data, error } = await this.supabase.admin
             .from('lessons')
-            .insert({
+            .select('*')
+            .eq('theme_id', themeId)
+            .order('order_index', { ascending: true });
+        if (error)
+            throw new common_1.BadRequestException(error.message);
+        return data || [];
+    }
+    async findOne(id, userId, role) {
+        const { data: lesson } = await this.supabase.admin
+            .from('lessons')
+            .select('*, themes!inner(process_id, processes!inner(teacher_id, id))')
+            .eq('id', id)
+            .single();
+        if (!lesson)
+            throw new common_1.NotFoundException('Lesson not found');
+        if (role === 'teacher') {
+            if (lesson.themes?.processes?.teacher_id !== userId) {
+                throw new common_1.ForbiddenException('Not your lesson');
+            }
+        }
+        else {
+            const processId = lesson.themes?.process_id;
+            const { data: assigned } = await this.supabase.admin
+                .from('student_processes')
+                .select('id')
+                .eq('student_id', userId)
+                .eq('process_id', processId)
+                .single();
+            if (!assigned)
+                throw new common_1.ForbiddenException('Lesson not assigned to you');
+        }
+        return lesson;
+    }
+    async createForTheme(themeId, dto, teacherId) {
+        await this.assertThemeOwner(themeId, teacherId);
+        const { data: theme } = await this.supabase.admin
+            .from('themes')
+            .select('process_id')
+            .eq('id', themeId)
+            .single();
+        const insert = {
+            theme_id: themeId,
+            process_id: theme.process_id,
+            title: dto.title,
+            description: dto.description,
+            lesson_type: dto.lessonType,
+            content_url: dto.contentUrl,
+            order_index: dto.orderIndex || 0,
+        };
+        const { data, error } = await this.supabase.admin
+            .from('lessons')
+            .insert(insert)
+            .select()
+            .single();
+        if (error)
+            throw new common_1.BadRequestException(error.message);
+        return data;
+    }
+    async create(processId, dto, teacherId) {
+        await this.assertProcessOwner(processId, teacherId);
+        const insert = {
             process_id: processId,
             title: dto.title,
             description: dto.description,
             lesson_type: dto.lessonType,
             content_url: dto.contentUrl,
             order_index: dto.orderIndex,
-        })
+        };
+        if (dto.themeId !== undefined)
+            insert.theme_id = dto.themeId;
+        const { data, error } = await this.supabase.admin
+            .from('lessons')
+            .insert(insert)
             .select()
             .single();
         if (error)
-            throw new Error(error.message);
-        return {
-            id: data.id,
-            title: data.title,
-            description: data.description,
-            lessonType: data.lesson_type,
-            contentUrl: data.content_url,
-            orderIndex: data.order_index,
-        };
+            throw new common_1.BadRequestException(error.message);
+        return data;
     }
     async update(id, dto, teacherId) {
         const { data: lesson } = await this.supabase.admin
             .from('lessons')
-            .select('*, processes(teacher_id)')
+            .select('*, themes!inner(processes!inner(teacher_id, id))')
             .eq('id', id)
             .single();
         if (!lesson)
             throw new common_1.NotFoundException('Lesson not found');
-        if (lesson.processes?.teacher_id !== teacherId) {
+        if (lesson.themes?.processes?.teacher_id !== teacherId) {
             throw new common_1.ForbiddenException('Not your lesson');
         }
         const update = {};
@@ -75,30 +168,25 @@ let LessonsService = class LessonsService {
             update.content_url = dto.contentUrl;
         if (dto.orderIndex !== undefined)
             update.order_index = dto.orderIndex;
+        if (dto.themeId !== undefined)
+            update.theme_id = dto.themeId;
         const { data } = await this.supabase.admin
             .from('lessons')
             .update(update)
             .eq('id', id)
             .select()
             .single();
-        return {
-            id: data.id,
-            title: data.title,
-            description: data.description,
-            lessonType: data.lesson_type,
-            contentUrl: data.content_url,
-            orderIndex: data.order_index,
-        };
+        return data;
     }
     async remove(id, teacherId) {
         const { data: lesson } = await this.supabase.admin
             .from('lessons')
-            .select('*, processes(teacher_id)')
+            .select('*, themes!inner(processes!inner(teacher_id, id))')
             .eq('id', id)
             .single();
         if (!lesson)
             throw new common_1.NotFoundException('Lesson not found');
-        if (lesson.processes?.teacher_id !== teacherId) {
+        if (lesson.themes?.processes?.teacher_id !== teacherId) {
             throw new common_1.ForbiddenException('Not your lesson');
         }
         await this.supabase.admin.from('lessons').delete().eq('id', id);

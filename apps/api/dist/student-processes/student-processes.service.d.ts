@@ -19,4 +19,7 @@ export declare class StudentProcessesService {
         message: string;
     }>;
     unassign(id: string, teacherId: string): Promise<void>;
+    unassignByPair(processId: string, studentId: string, teacherId: string): Promise<{
+        message: string;
+    }>;
 }

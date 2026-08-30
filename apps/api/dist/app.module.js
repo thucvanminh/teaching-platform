@@ -13,6 +13,9 @@ const auth_module_1 = require("./auth/auth.module");
 const processes_module_1 = require("./processes/processes.module");
 const lessons_module_1 = require("./lessons/lessons.module");
 const student_processes_module_1 = require("./student-processes/student-processes.module");
+const themes_module_1 = require("./themes/themes.module");
+const questions_module_1 = require("./questions/questions.module");
+const submissions_module_1 = require("./submissions/submissions.module");
 const supabase_module_1 = require("./supabase/supabase.module");
 let AppModule = class AppModule {
 };
@@ -25,6 +28,9 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             processes_module_1.ProcessesModule,
             lessons_module_1.LessonsModule,
+            themes_module_1.ThemesModule,
+            questions_module_1.QuestionsModule,
+            submissions_module_1.SubmissionsModule,
             student_processes_module_1.StudentProcessesModule,
         ],
     })

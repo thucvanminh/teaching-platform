@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsIn, IsInt, Min } from 'class-validator';
+import { IsString, IsOptional, IsIn, IsInt, Min, IsUUID } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateLessonDto {
@@ -10,15 +10,21 @@ export class CreateLessonDto {
   description?: string;
 
   @IsIn(['website', 'pdf', 'video', 'document'])
-  lessonType: string;
+  @IsOptional()
+  lessonType?: string;
 
   @IsString()
-  contentUrl: string;
+  @IsOptional()
+  contentUrl?: string;
 
   @IsInt()
   @Min(0)
   @Type(() => Number)
   orderIndex: number;
+
+  @IsUUID()
+  @IsOptional()
+  themeId?: string;
 }
 
 export class UpdateLessonDto {
@@ -43,4 +49,8 @@ export class UpdateLessonDto {
   @IsOptional()
   @Type(() => Number)
   orderIndex?: number;
+
+  @IsUUID()
+  @IsOptional()
+  themeId?: string;
 }

@@ -94,4 +94,29 @@ export class StudentProcessesService {
 
     await this.supabase.admin.from('student_processes').delete().eq('id', id);
   }
+
+  async unassignByPair(processId: string, studentId: string, teacherId: string) {
+    const { data: process } = await this.supabase.admin
+      .from('processes')
+      .select('teacher_id')
+      .eq('id', processId)
+      .single();
+
+    if (!process) throw new NotFoundException('Process not found');
+    if (process.teacher_id !== teacherId) {
+      throw new ForbiddenException('Not your process');
+    }
+
+    const { data: sp } = await this.supabase.admin
+      .from('student_processes')
+      .select('id')
+      .eq('student_id', studentId)
+      .eq('process_id', processId)
+      .single();
+
+    if (!sp) throw new NotFoundException('Assignment not found');
+
+    await this.supabase.admin.from('student_processes').delete().eq('id', sp.id);
+    return { message: 'Unassigned successfully' };
+  }
 }

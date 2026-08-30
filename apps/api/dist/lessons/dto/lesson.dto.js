@@ -26,10 +26,12 @@ __decorate([
 ], CreateLessonDto.prototype, "description", void 0);
 __decorate([
     (0, class_validator_1.IsIn)(['website', 'pdf', 'video', 'document']),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateLessonDto.prototype, "lessonType", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateLessonDto.prototype, "contentUrl", void 0);
 __decorate([
@@ -38,6 +40,11 @@ __decorate([
     (0, class_transformer_1.Type)(() => Number),
     __metadata("design:type", Number)
 ], CreateLessonDto.prototype, "orderIndex", void 0);
+__decorate([
+    (0, class_validator_1.IsUUID)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateLessonDto.prototype, "themeId", void 0);
 class UpdateLessonDto {
 }
 exports.UpdateLessonDto = UpdateLessonDto;
@@ -68,4 +75,9 @@ __decorate([
     (0, class_transformer_1.Type)(() => Number),
     __metadata("design:type", Number)
 ], UpdateLessonDto.prototype, "orderIndex", void 0);
+__decorate([
+    (0, class_validator_1.IsUUID)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateLessonDto.prototype, "themeId", void 0);
 //# sourceMappingURL=lesson.dto.js.map

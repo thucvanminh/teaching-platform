@@ -94,6 +94,28 @@ let StudentProcessesService = class StudentProcessesService {
         }
         await this.supabase.admin.from('student_processes').delete().eq('id', id);
     }
+    async unassignByPair(processId, studentId, teacherId) {
+        const { data: process } = await this.supabase.admin
+            .from('processes')
+            .select('teacher_id')
+            .eq('id', processId)
+            .single();
+        if (!process)
+            throw new common_1.NotFoundException('Process not found');
+        if (process.teacher_id !== teacherId) {
+            throw new common_1.ForbiddenException('Not your process');
+        }
+        const { data: sp } = await this.supabase.admin
+            .from('student_processes')
+            .select('id')
+            .eq('student_id', studentId)
+            .eq('process_id', processId)
+            .single();
+        if (!sp)
+            throw new common_1.NotFoundException('Assignment not found');
+        await this.supabase.admin.from('student_processes').delete().eq('id', sp.id);
+        return { message: 'Unassigned successfully' };
+    }
 };
 exports.StudentProcessesService = StudentProcessesService;
 exports.StudentProcessesService = StudentProcessesService = __decorate([

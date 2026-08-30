@@ -27,6 +27,26 @@ export class StudentProcessesController {
     return this.service.assign(dto, req.user.userId);
   }
 
+  @Post(':processId/students')
+  @Roles('teacher')
+  assignToProcess(
+    @Param('processId') processId: string,
+    @Body() body: { studentId: string },
+    @Req() req: any,
+  ) {
+    return this.service.assign({ processId, studentId: body.studentId }, req.user.userId);
+  }
+
+  @Delete(':processId/students/:studentId')
+  @Roles('teacher')
+  unassignFromProcess(
+    @Param('processId') processId: string,
+    @Param('studentId') studentId: string,
+    @Req() req: any,
+  ) {
+    return this.service.unassignByPair(processId, studentId, req.user.userId);
+  }
+
   @Delete(':id')
   @Roles('teacher')
   unassign(@Param('id') id: string, @Req() req: any) {

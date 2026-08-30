@@ -18,5 +18,13 @@ export declare class StudentProcessesController {
     assign(dto: AssignProcessDto, req: any): Promise<{
         message: string;
     }>;
+    assignToProcess(processId: string, body: {
+        studentId: string;
+    }, req: any): Promise<{
+        message: string;
+    }>;
+    unassignFromProcess(processId: string, studentId: string, req: any): Promise<{
+        message: string;
+    }>;
     unassign(id: string, req: any): Promise<void>;
 }

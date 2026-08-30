@@ -18,6 +18,7 @@ exports.LessonsModule = LessonsModule = __decorate([
         imports: [],
         controllers: [lessons_controller_1.LessonsController],
         providers: [lessons_service_1.LessonsService],
+        exports: [lessons_service_1.LessonsService],
     })
 ], LessonsModule);
 //# sourceMappingURL=lessons.module.js.map

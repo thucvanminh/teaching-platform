@@ -32,6 +32,12 @@ let StudentProcessesController = class StudentProcessesController {
     assign(dto, req) {
         return this.service.assign(dto, req.user.userId);
     }
+    assignToProcess(processId, body, req) {
+        return this.service.assign({ processId, studentId: body.studentId }, req.user.userId);
+    }
+    unassignFromProcess(processId, studentId, req) {
+        return this.service.unassignByPair(processId, studentId, req.user.userId);
+    }
     unassign(id, req) {
         return this.service.unassign(id, req.user.userId);
     }
@@ -60,6 +66,26 @@ __decorate([
     __metadata("design:paramtypes", [assign_process_dto_1.AssignProcessDto, Object]),
     __metadata("design:returntype", void 0)
 ], StudentProcessesController.prototype, "assign", null);
+__decorate([
+    (0, common_1.Post)(':processId/students'),
+    (0, roles_decorator_1.Roles)('teacher'),
+    __param(0, (0, common_1.Param)('processId')),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object, Object]),
+    __metadata("design:returntype", void 0)
+], StudentProcessesController.prototype, "assignToProcess", null);
+__decorate([
+    (0, common_1.Delete)(':processId/students/:studentId'),
+    (0, roles_decorator_1.Roles)('teacher'),
+    __param(0, (0, common_1.Param)('processId')),
+    __param(1, (0, common_1.Param)('studentId')),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:returntype", void 0)
+], StudentProcessesController.prototype, "unassignFromProcess", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     (0, roles_decorator_1.Roles)('teacher'),
