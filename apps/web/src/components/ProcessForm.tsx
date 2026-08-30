@@ -31,16 +31,14 @@ export default function ProcessForm({ process, onSaved, onCancel }: Props) {
   }
 
   return (
-    <div className="card max-w-lg">
-      <h2 className="text-lg font-semibold text-[var(--color-text)] mb-6">
+    <div className="glass-card max-w-lg animate-fade-in">
+      <h2 className="text-xl font-bold text-white font-heading mb-6">
         {process ? 'Edit Process' : 'New Process'}
       </h2>
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-            Title
-          </label>
+          <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Title</label>
           <input 
             type="text" 
             placeholder="Enter process title" 
@@ -52,9 +50,7 @@ export default function ProcessForm({ process, onSaved, onCancel }: Props) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-            Description
-          </label>
+          <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Description</label>
           <textarea 
             placeholder="Enter description (optional)" 
             value={description} 
@@ -66,9 +62,7 @@ export default function ProcessForm({ process, onSaved, onCancel }: Props) {
 
         {process && (
           <div>
-            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-              Status
-            </label>
+            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Status</label>
             <select 
               value={status} 
               onChange={(e) => setStatus(e.target.value)} 
@@ -82,11 +76,7 @@ export default function ProcessForm({ process, onSaved, onCancel }: Props) {
         )}
 
         <div className="flex gap-3 pt-4">
-          <button 
-            type="submit" 
-            disabled={loading} 
-            className="btn btn-primary flex-1"
-          >
+          <button type="submit" disabled={loading} className="btn btn-primary flex-1">
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
@@ -95,17 +85,9 @@ export default function ProcessForm({ process, onSaved, onCancel }: Props) {
                 </svg>
                 Saving...
               </span>
-            ) : (
-              'Save'
-            )}
+            ) : 'Save'}
           </button>
-          <button 
-            type="button" 
-            onClick={onCancel} 
-            className="btn flex-1"
-          >
-            Cancel
-          </button>
+          <button type="button" onClick={onCancel} className="btn btn-secondary flex-1">Cancel</button>
         </div>
       </form>
     </div>

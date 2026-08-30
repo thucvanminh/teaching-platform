@@ -70,17 +70,17 @@ export default function LessonManager({ processId, processTitle, onBack }: Props
   }
 
   return (
-    <div>
+    <div className="animate-fade-in">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
-        <button onClick={onBack} className="btn text-sm">
+        <button onClick={onBack} className="btn btn-secondary text-sm">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
           Back
         </button>
         <div>
-          <h2 className="text-xl font-bold text-[var(--color-text)]">Lessons</h2>
+          <h2 className="text-2xl font-bold text-white font-heading">Lessons</h2>
           <p className="text-sm text-[var(--color-text-secondary)]">{processTitle}</p>
         </div>
       </div>
@@ -100,13 +100,13 @@ export default function LessonManager({ processId, processTitle, onBack }: Props
 
       {/* Lesson Form */}
       {showForm && (
-        <div className="card max-w-lg mb-6">
-          <h3 className="font-semibold text-[var(--color-text)] mb-4">
+        <div className="glass-card max-w-lg mb-6">
+          <h3 className="font-bold text-lg text-white font-heading mb-4">
             {editLesson ? 'Edit Lesson' : 'New Lesson'}
           </h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">Title</label>
+              <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Title</label>
               <input 
                 type="text" 
                 placeholder="Enter lesson title" 
@@ -118,7 +118,7 @@ export default function LessonManager({ processId, processTitle, onBack }: Props
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">Description</label>
+              <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Description</label>
               <textarea 
                 placeholder="Enter description (optional)" 
                 value={description} 
@@ -129,7 +129,7 @@ export default function LessonManager({ processId, processTitle, onBack }: Props
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">Type</label>
+              <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Type</label>
               <select 
                 value={lessonType} 
                 onChange={(e) => setLessonType(e.target.value)} 
@@ -143,7 +143,7 @@ export default function LessonManager({ processId, processTitle, onBack }: Props
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">Content URL</label>
+              <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Content URL</label>
               <input 
                 type="text" 
                 placeholder="https://..." 
@@ -155,7 +155,7 @@ export default function LessonManager({ processId, processTitle, onBack }: Props
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">Order Index</label>
+              <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Order Index</label>
               <input 
                 type="number" 
                 placeholder="0" 
@@ -169,9 +169,7 @@ export default function LessonManager({ processId, processTitle, onBack }: Props
               <button type="submit" disabled={loading} className="btn btn-primary flex-1">
                 {loading ? 'Saving...' : 'Save'}
               </button>
-              <button type="button" onClick={resetForm} className="btn flex-1">
-                Cancel
-              </button>
+              <button type="button" onClick={resetForm} className="btn btn-secondary flex-1">Cancel</button>
             </div>
           </form>
         </div>
@@ -181,33 +179,30 @@ export default function LessonManager({ processId, processTitle, onBack }: Props
       {lessons.length === 0 ? (
         <div className="text-center py-12">
           <div className="text-5xl mb-4">📖</div>
-          <h3 className="text-lg font-medium text-[var(--color-text)] mb-2">No lessons yet</h3>
+          <h3 className="text-xl font-bold text-white font-heading mb-2">No lessons yet</h3>
           <p className="text-[var(--color-text-secondary)]">Add your first lesson to get started.</p>
         </div>
       ) : (
         <div className="space-y-3">
-          {lessons.sort((a, b) => a.orderIndex - b.orderIndex).map((l) => (
-            <div key={l.id} className="quiz-card">
+          {lessons.sort((a, b) => a.orderIndex - b.orderIndex).map((l, idx) => (
+            <div key={l.id} className="quiz-card animate-fade-in" style={{ animationDelay: `${idx * 0.1}s` }}>
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                   <div className="question-number">{l.orderIndex}</div>
                   <div>
-                    <h4 className="font-medium text-[var(--color-text)]">{l.title}</h4>
-                    <span className="text-xs px-2 py-1 rounded-full bg-[var(--color-bg)] text-[var(--color-text-secondary)]"
-                      style={{
-                        boxShadow: 'inset -2px -2px 5px var(--shadow-light), inset 2px 2px 5px var(--shadow-dark)'
-                      }}>
+                    <h4 className="font-medium text-white">{l.title}</h4>
+                    <span className="text-xs px-2 py-1 rounded-full bg-[rgba(255,255,255,0.1)] text-[var(--color-text-secondary)]">
                       {l.lessonType}
                     </span>
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <button onClick={() => handleEdit(l)} className="btn text-sm px-3 py-2">
+                  <button onClick={() => handleEdit(l)} className="btn btn-ghost text-sm px-3 py-2">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                   </button>
-                  <button onClick={() => handleDelete(l.id)} className="btn text-sm px-3 py-2 text-[var(--color-error)]">
+                  <button onClick={() => handleDelete(l.id)} className="btn btn-ghost text-sm px-3 py-2 text-[var(--color-error)]">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>

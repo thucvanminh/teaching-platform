@@ -2,19 +2,20 @@
 
 ## Overview
 
-This design system follows **Neumorphism (Soft UI)** style with a **mobile-first** approach. The project is an educational platform for students to take quizzes.
+This design system follows **Glassmorphism (Frosted Glass)** style with a **mobile-first** approach. The project is an educational platform for students to take quizzes.
 
 **Last updated:** 2026-08-30
 
 ---
 
-## Style: Neumorphism
+## Style: Glassmorphism
 
-- **Concept:** Soft, embossed/debossed elements with subtle depth
-- **Border-radius:** 12-16px (all elements)
-- **Shadows:** Dual soft shadows (light + dark)
-- **Background:** Monochromatic light pastel
-- **Animation:** Smooth press effect (150ms)
+- **Concept:** Translucent frosted glass elements with backdrop blur, layered depth
+- **Background:** Vibrant gradient (Purple-Blue)
+- **Cards:** Translucent white (rgba 15-25%) + backdrop blur 15-20px
+- **Borders:** Subtle 1px solid rgba(255,255,255,0.2)
+- **Animation:** Smooth hover transitions (250ms), glow effects
+- **Depth:** Z-index layering with shadows
 
 ---
 
@@ -22,24 +23,35 @@ This design system follows **Neumorphism (Soft UI)** style with a **mobile-first
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| `--color-bg` | `#E8EDF2` | Main background |
-| `--shadow-light` | `#FFFFFF` | Light shadow (top-left) |
-| `--shadow-dark` | `#C5CDD6` | Dark shadow (bottom-right) |
-| `--color-primary` | `#6C9BCF` | Primary actions, links |
-| `--color-on-primary` | `#FFFFFF` | Text on primary |
-| `--color-accent` | `#F4B942` | Scores, leaderboard, highlights |
-| `--color-on-accent` | `#1A1A2E` | Text on accent |
-| `--color-success` | `#7BC67E` | Correct answers, success states |
-| `--color-error` | `#E57373` | Wrong answers, errors |
-| `--color-text` | `#2D3748` | Primary text |
-| `--color-text-secondary` | `#718096` | Secondary text |
+| `--bg-gradient` | `linear-gradient(135deg, #667eea 0%, #764ba2 100%)` | Page background |
+| `--glass-bg` | `rgba(255,255,255,0.15)` | Card backgrounds |
+| `--glass-bg-strong` | `rgba(255,255,255,0.25)` | Hover states |
+| `--glass-border` | `rgba(255,255,255,0.2)` | Card borders |
+| `--glass-blur` | `15px` | Backdrop filter |
+| `--glass-blur-strong` | `20px` | Header blur |
+| `--color-primary` | `#667eea` | Primary actions |
+| `--color-primary-light` | `#818cf8` | Primary light |
+| `--color-secondary` | `#764ba2` | Secondary |
+| `--color-accent` | `#f093fb` | Highlights, scores |
+| `--color-success` | `#34d399` | Correct answers |
+| `--color-error` | `#f87171` | Wrong answers |
+| `--color-warning` | `#fbbf24` | Warnings |
+| `--color-text` | `#ffffff` | Primary text |
+| `--color-text-secondary` | `rgba(255,255,255,0.7)` | Secondary text |
+| `--color-text-muted` | `rgba(255,255,255,0.5)` | Muted text |
 
 ---
 
 ## Typography
 
-**Font Family:** Plus Jakarta Sans  
-**Import:** `https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,700;1,400`
+**Font Family:**
+- **Heading:** Lora (Serif) - organic, dịu dàng
+- **Body:** Raleway (Sans) - thanh lịch, nhẹ nhàng
+
+**Import:**
+```css
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap');
+```
 
 | Token | Value | Usage |
 |-------|-------|-------|
@@ -50,6 +62,7 @@ This design system follows **Neumorphism (Soft UI)** style with a **mobile-first
 | `--text-xl` | `1.25rem` (20px) | Section headings |
 | `--text-2xl` | `1.5rem` (24px) | Page titles |
 | `--text-3xl` | `1.875rem` (30px) | Hero text |
+| `--text-4xl` | `2.25rem` (36px) | Large hero |
 
 **Line Heights:**
 - `--leading-tight: 1.25` (headings)
@@ -79,7 +92,7 @@ This design system follows **Neumorphism (Soft UI)** style with a **mobile-first
 | Name | Value | Usage |
 |------|-------|-------|
 | Mobile | `< 768px` | Default |
-| Tablet | `≥ 768px` | Grid adjustments |
+| Tablet | `≥ 768px` | Grid 2-cols |
 | Desktop | `≥ 1024px` | Full layout |
 | Large | `≥ 1440px` | Max-width container |
 
@@ -87,121 +100,99 @@ This design system follows **Neumorphism (Soft UI)** style with a **mobile-first
 
 ## Components
 
-### Button (Neumorphic)
+### Glass Card
+```css
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  transition: all var(--transition-normal);
+}
+```
 
+### Button (Gradient)
 ```css
 .btn {
-  background: var(--color-bg);
-  border-radius: 12px;
-  box-shadow: 
-    -5px -5px 15px var(--shadow-light),
-    5px 5px 15px var(--shadow-dark);
-  transition: all 150ms ease;
-  cursor: pointer;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border: none;
+  border-radius: var(--radius-md);
+  color: white;
+  font-family: var(--font-body);
+  transition: all var(--transition-normal);
 }
 
-.btn:active {
-  box-shadow: 
-    inset -3px -3px 8px var(--shadow-light),
-    inset 3px 3px 8px var(--shadow-dark);
-  transform: scale(0.98);
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
 }
 ```
 
-### Card (Quiz Card)
-
-```css
-.quiz-card {
-  background: var(--color-bg);
-  border-radius: 16px;
-  box-shadow: 
-    -6px -6px 18px var(--shadow-light),
-    6px 6px 18px var(--shadow-dark);
-  padding: var(--space-6);
-}
-```
-
-### Input Field
-
+### Input (Glass)
 ```css
 .input {
-  background: var(--color-bg);
-  border: none;
-  border-radius: 12px;
-  box-shadow: 
-    inset -3px -3px 8px var(--shadow-light),
-    inset 3px 3px 8px var(--shadow-dark);
-  padding: var(--space-3) var(--space-4);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(var(--glass-blur));
+  color: white;
+}
+
+.input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
 }
 ```
 
-### Answer Option (Quiz)
-
+### Answer Option
 ```css
 .answer-option {
-  background: var(--color-bg);
-  border-radius: 12px;
-  box-shadow: 
-    -4px -4px 12px var(--shadow-light),
-    4px 4px 12px var(--shadow-dark);
-  padding: var(--space-4);
-  cursor: pointer;
-  transition: all 150ms ease;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+}
+
+.answer-option:hover {
+  background: var(--glass-bg-strong);
+  transform: translateX(4px);
 }
 
 .answer-option.selected {
-  box-shadow: 
-    inset -3px -3px 8px var(--shadow-light),
-    inset 3px 3px 8px var(--shadow-dark);
-}
-
-.answer-option.correct {
-  background: var(--color-success);
-  color: white;
-}
-
-.answer-option.wrong {
-  background: var(--color-error);
-  color: white;
+  background: rgba(102, 126, 234, 0.3);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
 }
 ```
 
 ### Progress Bar
-
 ```css
 .progress-bar {
-  background: var(--color-bg);
-  border-radius: 10px;
-  box-shadow: 
-    inset -3px -3px 8px var(--shadow-light),
-    inset 3px 3px 8px var(--shadow-dark);
-  height: 12px;
-  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  height: 8px;
 }
 
 .progress-fill {
-  background: var(--color-primary);
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
   height: 100%;
-  border-radius: 10px;
-  transition: width 300ms ease;
+  border-radius: var(--radius-full);
 }
 ```
 
 ### Score Badge
-
 ```css
 .score-badge {
-  width: 64px;
-  height: 64px;
+  width: 80px;
+  height: 80px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
   border-radius: 50%;
-  background: var(--color-bg);
-  box-shadow: 
-    -5px -5px 15px var(--shadow-light),
-    5px 5px 15px var(--shadow-dark);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--text-2xl);
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
   font-weight: 700;
   color: var(--color-accent);
 }
@@ -212,7 +203,7 @@ This design system follows **Neumorphism (Soft UI)** style with a **mobile-first
 ## Icons
 
 **Recommended libraries:** Lucide, Heroicons, Phosphor Icons  
-**Do NOT use emojis as icons**
+**Do NOT use emojis as icons** (use inline SVG)
 
 ---
 
@@ -229,10 +220,11 @@ This design system follows **Neumorphism (Soft UI)** style with a **mobile-first
 ## Anti-Patterns (Avoid)
 
 - ❌ Using emojis as icons
-- ❌ Shadows darker than defined palette
+- ❌ Solid backgrounds on cards (must be glass)
 - ❌ Font size below 12px
 - ❌ Disabling zoom on mobile
-- ❌ Missing hover/active states
+- ❌ Missing hover/focus states
+- ❌ No backdrop-filter on glass elements
 
 ---
 
@@ -241,7 +233,7 @@ This design system follows **Neumorphism (Soft UI)** style with a **mobile-first
 ```
 design-system/teaching-american/
 ├── MASTER.md              # This file (design system documentation)
-├── design-system.css      # CSS variables and base styles
+├── design-system.css      # CSS variables + component styles
 └── pages/                 # Page-specific overrides (if needed)
 ```
 
@@ -251,9 +243,17 @@ design-system/teaching-american/
 
 When implementing UI for this project:
 
-1. **Import the CSS file first:** `@import '../design-system/teaching-american/design-system.css';`
+1. **Import the CSS file first:** `@import '../../../design-system/teaching-american/design-system.css';`
 2. **Use CSS variables** from the design system
-3. **Apply neumorphic shadows** to all interactive elements
+3. **Apply glass effect** to all cards/containers:
+   ```css
+   background: var(--glass-bg);
+   backdrop-filter: blur(var(--glass-blur));
+   border: 1px solid var(--glass-border);
+   border-radius: var(--radius-lg);
+   ```
 4. **Mobile-first** - design for 375px first, then scale up
-5. **Use Plus Jakarta Sans** font family
-6. **Check contrast** for text on colored backgrounds
+5. **Use Lora for headings, Raleway for body**
+6. **Check contrast** for text on glass backgrounds (use `--color-text` and `--color-text-secondary`)
+7. **Buttons** use gradient backgrounds with glow hover effect
+8. **Forms** use translucent inputs with focus glow

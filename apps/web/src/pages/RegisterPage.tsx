@@ -23,20 +23,18 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="card w-full max-w-md">
+      <div className="glass-card w-full max-w-md animate-fade-in">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[var(--color-primary)] text-white text-2xl font-bold mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white text-2xl font-bold mb-4 shadow-lg">
             T
           </div>
-          <h1 className="text-2xl font-bold text-[var(--color-text)]">Create Account</h1>
-          <p className="text-sm text-[var(--color-text-secondary)] mt-1">Join TeachFlow today</p>
+          <h1 className="text-3xl font-bold text-white font-heading">Create Account</h1>
+          <p className="text-sm text-[var(--color-text-secondary)] mt-2">Join TeachFlow today</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-              Full Name
-            </label>
+            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Full Name</label>
             <input
               type="text"
               placeholder="Enter your full name"
@@ -48,9 +46,7 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-              Username
-            </label>
+            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Username</label>
             <input
               type="text"
               placeholder="Choose a username"
@@ -61,15 +57,11 @@ export default function RegisterPage() {
               className="input"
               required
             />
-            <p className="text-xs text-[var(--color-text-secondary)] mt-1">
-              Lowercase letters, numbers, and underscores only
-            </p>
+            <p className="text-xs text-[var(--color-text-muted)] mt-1">Lowercase letters, numbers, and underscores only</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-              Email
-            </label>
+            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Email</label>
             <input
               type="email"
               placeholder="Enter your email"
@@ -81,9 +73,7 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-              Password
-            </label>
+            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">Password</label>
             <input
               type="password"
               placeholder="Create a password"
@@ -93,27 +83,20 @@ export default function RegisterPage() {
               className="input"
               required
             />
-            <p className="text-xs text-[var(--color-text-secondary)] mt-1">
-              Minimum 6 characters
-            </p>
+            <p className="text-xs text-[var(--color-text-muted)] mt-1">Minimum 6 characters</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-              I am a...
-            </label>
+            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">I am a...</label>
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => setRole('student')}
                 className={`p-4 rounded-xl text-center transition-all ${
                   role === 'student'
-                    ? 'bg-[var(--color-primary)] text-white shadow-lg'
-                    : 'bg-[var(--color-bg)] text-[var(--color-text)]'
+                    ? 'bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white shadow-lg'
+                    : 'glass-card text-white'
                 }`}
-                style={role === 'student' ? {} : {
-                  boxShadow: '-4px -4px 10px var(--shadow-light), 4px 4px 10px var(--shadow-dark)'
-                }}
               >
                 <div className="text-2xl mb-1">📚</div>
                 <div className="font-medium">Student</div>
@@ -123,12 +106,9 @@ export default function RegisterPage() {
                 onClick={() => setRole('teacher')}
                 className={`p-4 rounded-xl text-center transition-all ${
                   role === 'teacher'
-                    ? 'bg-[var(--color-primary)] text-white shadow-lg'
-                    : 'bg-[var(--color-bg)] text-[var(--color-text)]'
+                    ? 'bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white shadow-lg'
+                    : 'glass-card text-white'
                 }`}
-                style={role === 'teacher' ? {} : {
-                  boxShadow: '-4px -4px 10px var(--shadow-light), 4px 4px 10px var(--shadow-dark)'
-                }}
               >
                 <div className="text-2xl mb-1">👩‍🏫</div>
                 <div className="font-medium">Teacher</div>
@@ -137,22 +117,19 @@ export default function RegisterPage() {
           </div>
 
           {error && (
-            <div className="p-3 rounded-lg bg-[var(--color-error)] text-white text-sm">
+            <div className="p-3 rounded-lg bg-[rgba(248,113,113,0.2)] border border-[var(--color-error)] text-white text-sm">
               {error}
             </div>
           )}
 
-          <button
-            type="submit"
-            className="btn btn-primary w-full"
-          >
+          <button type="submit" className="btn btn-primary w-full">
             Create Account
           </button>
         </form>
 
         <p className="text-center mt-6 text-[var(--color-text-secondary)]">
           Already have an account?{' '}
-          <a href="/login" className="text-[var(--color-primary)] font-medium hover:underline">
+          <a href="/login" className="text-[var(--color-accent)] font-medium hover:underline">
             Sign In
           </a>
         </p>
