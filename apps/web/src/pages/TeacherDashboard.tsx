@@ -69,7 +69,7 @@ export default function TeacherDashboard() {
       {/* Main Content with comfortable spacing from top bar */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 md:pt-10 pb-16">
         {/* Navigation Tabs Bar - Centered on Mobile */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 my-[10px]">
           <nav className="flex items-center justify-center sm:justify-start gap-2 p-1.5 rounded-2xl glass-panel w-full sm:w-auto shadow-sm">
             <button 
               onClick={() => setView('list')} 
