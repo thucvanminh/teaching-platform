@@ -43,8 +43,8 @@ export default function TeacherDashboard() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="glass-header py-4 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
+      <header className="glass-header py-3 sm:py-4 px-4 sm:px-8 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto flex justify-between items-center w-full">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white flex items-center justify-center font-bold shadow-[0_0_16px_var(--color-primary-glow)] border border-white/40">
               T
@@ -66,29 +66,39 @@ export default function TeacherDashboard() {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-        {/* Navigation Tabs */}
-        <nav className="flex gap-3 mb-6 overflow-x-auto pb-2">
-          <button 
-            onClick={() => setView('list')} 
-            className={`btn text-sm whitespace-nowrap ${view === 'list' ? 'btn-primary' : 'btn-secondary'}`}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-            </svg>
-            Processes
-          </button>
-          <button 
-            onClick={() => { setSelectedProcess(null); setView('create') }} 
-            className={`btn text-sm whitespace-nowrap ${view === 'create' ? 'btn-primary' : 'btn-secondary'}`}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            New Process
-          </button>
-        </nav>
+      {/* Main Content with comfortable spacing from top bar */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 md:pt-10 pb-16">
+        {/* Navigation Tabs Bar - Centered on Mobile */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <nav className="flex items-center justify-center sm:justify-start gap-2 p-1.5 rounded-2xl glass-panel w-full sm:w-auto shadow-sm">
+            <button 
+              onClick={() => setView('list')} 
+              className={`btn text-sm px-5 py-2.5 flex-1 sm:flex-initial justify-center rounded-xl transition-all ${
+                view === 'list' 
+                  ? 'btn-primary shadow-md' 
+                  : 'btn-ghost text-[var(--color-text-secondary)] hover:text-white'
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
+              <span>Processes</span>
+            </button>
+            <button 
+              onClick={() => { setSelectedProcess(null); setView('create') }} 
+              className={`btn text-sm px-5 py-2.5 flex-1 sm:flex-initial justify-center rounded-xl transition-all ${
+                view === 'create' 
+                  ? 'btn-primary shadow-md' 
+                  : 'btn-ghost text-[var(--color-text-secondary)] hover:text-white'
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              <span>New Process</span>
+            </button>
+          </nav>
+        </div>
 
         {/* Views */}
         {view === 'list' && (

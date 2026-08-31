@@ -31,8 +31,8 @@ export default function ProcessForm({ process, onSaved, onCancel }: Props) {
   }
 
   return (
-    <div className="glass-card max-w-lg animate-fade-in">
-      <h2 className="text-xl font-bold text-white font-heading mb-6">
+    <div className="glass-card max-w-xl mx-auto p-6 sm:p-8 animate-fade-in shadow-xl">
+      <h2 className="text-xl sm:text-2xl font-bold text-white font-heading mb-6">
         {process ? 'Edit Process' : 'New Process'}
       </h2>
       

@@ -50,23 +50,23 @@ export default function StudentAssignment({ processId, processTitle, onBack }: P
   return (
     <div className="animate-fade-in">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-6">
-        <button onClick={onBack} className="btn btn-secondary text-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
+        <button onClick={onBack} className="btn btn-secondary text-sm px-4 py-2.5 rounded-xl self-start sm:self-auto">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
           Back
         </button>
         <div>
-          <h2 className="text-2xl font-bold text-white font-heading">Students</h2>
+          <h2 className="text-2xl font-bold text-white font-heading">Student Assignments</h2>
           <p className="text-sm text-[var(--color-text-secondary)]">{processTitle}</p>
         </div>
       </div>
 
       {/* Assign Form */}
-      <div className="glass-card max-w-lg mb-8">
+      <div className="glass-card max-w-xl mb-8 p-6 shadow-lg">
         <h3 className="font-bold text-lg text-white font-heading mb-4">Assign Student</h3>
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           <select 
             value={selectedStudent} 
             onChange={(e) => setSelectedStudent(e.target.value)} 
@@ -80,7 +80,7 @@ export default function StudentAssignment({ processId, processTitle, onBack }: P
           <button 
             onClick={handleAssign} 
             disabled={loading || !selectedStudent}
-            className="btn btn-primary"
+            className="btn btn-primary justify-center px-5 py-2.5"
           >
             {loading ? (
               <span className="flex items-center gap-2">
@@ -105,30 +105,30 @@ export default function StudentAssignment({ processId, processTitle, onBack }: P
       {/* Assigned Students List */}
       <h3 className="font-bold text-lg text-white font-heading mb-4">Assigned Students</h3>
       {assignments.length === 0 ? (
-        <div className="text-center py-12">
+        <div className="text-center py-16 px-4 glass-card max-w-md mx-auto animate-fade-in shadow-lg">
           <div className="text-5xl mb-4">👥</div>
           <h3 className="text-xl font-bold text-white font-heading mb-2">No students assigned</h3>
-          <p className="text-[var(--color-text-secondary)]">Assign students to this process using the form above.</p>
+          <p className="text-sm text-[var(--color-text-secondary)]">Assign students to this process using the form above.</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4 max-w-3xl">
           {assignments.map((a, idx) => (
             <div key={a.id} className="quiz-card animate-fade-in" style={{ animationDelay: `${idx * 0.1}s` }}>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white flex items-center justify-center font-bold shadow-[0_0_16px_var(--color-primary-glow)] border border-white/40">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white flex items-center justify-center font-bold shadow-[0_0_16px_var(--color-primary-glow)] border border-white/40 flex-shrink-0">
                     {(a.studentName || a.studentId).charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <h4 className="font-medium text-white">{a.studentName || a.studentId}</h4>
-                    <p className="text-xs text-[var(--color-text-muted)]">
+                    <h4 className="font-medium text-white text-base">{a.studentName || a.studentId}</h4>
+                    <p className="text-xs text-[var(--color-text-muted)] mt-0.5">
                       Assigned {new Date(a.assignedAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
                 <button 
                   onClick={() => handleUnassign(a.id)} 
-                  className="btn btn-ghost text-sm px-3 py-2 text-[var(--color-error)]"
+                  className="btn btn-ghost text-xs sm:text-sm px-3 py-2 text-[var(--color-error)] hover:bg-[rgba(248,113,113,0.15)] rounded-xl"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6" />

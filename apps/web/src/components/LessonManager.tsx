@@ -72,35 +72,37 @@ export default function LessonManager({ processId, processTitle, onBack }: Props
   return (
     <div className="animate-fade-in">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-6">
-        <button onClick={onBack} className="btn btn-secondary text-sm">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Back
-        </button>
-        <div>
-          <h2 className="text-2xl font-bold text-white font-heading">Lessons</h2>
-          <p className="text-sm text-[var(--color-text-secondary)]">{processTitle}</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div className="flex items-center gap-4">
+          <button onClick={onBack} className="btn btn-secondary text-sm px-4 py-2.5 rounded-xl self-start sm:self-auto">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back
+          </button>
+          <div>
+            <h2 className="text-2xl font-bold text-white font-heading">Course Lessons</h2>
+            <p className="text-sm text-[var(--color-text-secondary)]">{processTitle}</p>
+          </div>
         </div>
-      </div>
 
-      {/* Add Lesson Button */}
-      {!showForm && (
-        <button 
-          onClick={() => { resetForm(); setShowForm(true) }} 
-          className="btn btn-primary mb-6"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Add Lesson
-        </button>
-      )}
+        {/* Add Lesson Button */}
+        {!showForm && (
+          <button 
+            onClick={() => { resetForm(); setShowForm(true) }} 
+            className="btn btn-primary px-5 py-2.5 self-start sm:self-auto justify-center"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add Lesson
+          </button>
+        )}
+      </div>
 
       {/* Lesson Form */}
       {showForm && (
-        <div className="glass-card max-w-lg mb-6">
+        <div className="glass-card max-w-xl mb-8 p-6 shadow-xl">
           <h3 className="font-bold text-lg text-white font-heading mb-4">
             {editLesson ? 'Edit Lesson' : 'New Lesson'}
           </h3>

@@ -146,10 +146,10 @@ export default function QuizPage() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="glass-header py-3 px-4 sticky top-0 z-10">
-        <div className="max-w-2xl mx-auto">
+      <header className="glass-header py-3 sm:py-4 px-4 sm:px-6 sticky top-0 z-40">
+        <div className="max-w-2xl mx-auto w-full">
           <div className="flex items-center justify-between mb-2">
-            <button onClick={() => navigate(-1)} className="btn btn-ghost text-sm px-2 py-1">
+            <button onClick={() => navigate(-1)} className="btn btn-ghost text-sm px-2.5 py-1.5 rounded-lg">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
@@ -169,8 +169,8 @@ export default function QuizPage() {
         </div>
       </header>
 
-      {/* Question */}
-      <main className="max-w-2xl mx-auto px-4 py-6">
+      {/* Main Question with top margin */}
+      <main className="max-w-2xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 md:pt-10 pb-16">
         <div className="glass-card mb-6 animate-fade-in" key={currentIdx}>
           <div className="flex items-start gap-4 mb-6">
             <div className="question-number">{currentIdx + 1}</div>
